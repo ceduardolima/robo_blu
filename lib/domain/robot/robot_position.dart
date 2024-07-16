@@ -16,5 +16,12 @@ class RobotPosition implements Transmite {
   }
 
   @override
-  String toString() => 'RobotPosition(linksQuantity: $linksQuantity, positions: $positions)';
+  String toString() {
+    String toString = "[";
+    for (int i = 0; i < positions.length - 1; i++) {
+      toString += "${positions[i]}, ";
+    }
+    toString += "${positions.last}]";
+    return toString;
+  }
 }

@@ -9,6 +9,10 @@ class Bound {
     required this.lower,
   });
 
+  bool isValid(num number) {
+    return number <= upper && number >= lower;
+  }
+
   Bound copyWith({
     double? upper,
     double? lower,
@@ -35,7 +39,8 @@ class Bound {
 
   String toJson() => json.encode(toMap());
 
-  factory Bound.fromJson(String source) => Bound.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Bound.fromJson(String source) =>
+      Bound.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'Bound(upper: $upper, lower: $lower)';
@@ -44,9 +49,7 @@ class Bound {
   bool operator ==(covariant Bound other) {
     if (identical(this, other)) return true;
 
-    return
-      other.upper == upper &&
-      other.lower == lower;
+    return other.upper == upper && other.lower == lower;
   }
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:r_link/pages/direct_kine/directKinematicPage.dart';
+import 'package:r_link/pages/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const DirectKinematic(),
+      home: const MainPage(),
     );
   }
 }
