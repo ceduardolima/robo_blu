@@ -3,7 +3,7 @@ import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
 import 'package:r_link/mock/robot_mock.dart';
 import 'package:r_link/resources/theme/app_theme.dart';
-import 'package:r_link/widgets/dialogs/add_position_page.dart';
+import 'package:r_link/ui/widgets/dialogs/add_position_page.dart';
 
 class ControlPositionsPage extends StatefulWidget {
   const ControlPositionsPage({super.key, required this.robot});

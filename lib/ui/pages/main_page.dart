@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:r_link/mock/robot_mock.dart';
-import 'package:r_link/pages/control_position/control_positions.dart';
+import 'package:r_link/ui/pages/control_position/control_positions.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});

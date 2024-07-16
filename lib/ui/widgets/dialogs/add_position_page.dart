@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
-import 'package:r_link/widgets/textFields/link_text_field.dart';
+import 'package:r_link/ui/widgets/textFields/link_text_field.dart';
 
 class AddPositionPage extends StatelessWidget {
   AddPositionPage({super.key, required this.robot});

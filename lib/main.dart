@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:r_link/pages/main_page.dart';
+import 'package:r_link/ui/pages/main_page.dart';
 import 'package:r_link/resources/theme/app_theme.dart';
 
 void main() {
