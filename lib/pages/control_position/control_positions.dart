@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
 import 'package:r_link/mock/robot_mock.dart';
+import 'package:r_link/resources/theme/app_theme.dart';
 import 'package:r_link/widgets/dialogs/add_position_page.dart';
 
 class ControlPositionsPage extends StatefulWidget {
@@ -56,7 +57,10 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
 
   Widget _deletePosButton(int index) {
     return IconButton(
-      icon: const Icon(Icons.delete),
+      icon: Icon(
+        Icons.delete,
+        color: colorScheme.secondary,
+      ),
       onPressed: () {
         setState(() => positions.removeAt(index));
       },
@@ -66,9 +70,10 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: const Text("Controlar Posição"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [_sendPositions()],
       ),
       floatingActionButton: FloatingActionButton(

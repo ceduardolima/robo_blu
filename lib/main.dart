@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:r_link/pages/main_page.dart';
+import 'package:r_link/resources/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: colorScheme,
+        elevatedButtonTheme: buttonThemeData,
+        floatingActionButtonTheme: floatingButtonTheme,
+        appBarTheme: appBarTheme,
         useMaterial3: true,
       ),
       home: const MainPage(),

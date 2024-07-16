@@ -8,10 +8,12 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        title: const Text("Menu"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+          title: Text(
+        "Menu",
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      )),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -22,12 +24,16 @@ class MainPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ControlPositionsPage(robot: robot,),
+                      builder: (context) => ControlPositionsPage(
+                        robot: robot,
+                      ),
                     ));
               },
               child: Container(
-                child: ListTile(
-                  title: Text("Controlar Posições"),
+                decoration:
+                    BoxDecoration(color: Theme.of(context).colorScheme.surface),
+                child: const ListTile(
+                  title: Text("Controlar passo a passo"),
                 ),
               ),
             )

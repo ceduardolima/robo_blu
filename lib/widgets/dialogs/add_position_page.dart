@@ -26,7 +26,6 @@ class AddPositionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Adicionar posição"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
