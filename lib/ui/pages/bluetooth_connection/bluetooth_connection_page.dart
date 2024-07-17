@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:r_link/ui/pages/bluetooth_connection/device_screen.dart';
 import 'package:r_link/ui/widgets/tiles/scan_result_tile.dart';
 import 'package:r_link/ui/widgets/tiles/system_device_tile.dart';
 
@@ -23,7 +24,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   @override
   void initState() {
     super.initState();
-
     _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
       _scanResults = results;
       if (mounted) {
@@ -84,12 +84,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     device.connect().catchError((e) {
       _snackBar("Não foi possível conectar");
     });
-    /*
     MaterialPageRoute route = MaterialPageRoute(
         builder: (context) => DeviceScreen(device: device),
-        settings: RouteSettings(name: '/DeviceScreen'));
+        settings: const RouteSettings(name: '/DeviceScreen'));
     Navigator.of(context).push(route);
-    */
   }
 
   Future onRefresh() {
