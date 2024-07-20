@@ -13,12 +13,6 @@ class RLink extends Link {
   });
 
   @override
-  String transmite() {
-    // TODO: implement transmite
-    throw UnimplementedError();
-  }
-
-  @override
   String toString() => 'RLink(d: $d, a: $a, alpha: $alpha, bounds: $bound, inverse: $inverse)';
 
   @override

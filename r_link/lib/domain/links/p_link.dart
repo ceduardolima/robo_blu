@@ -17,11 +17,6 @@ class PLink extends Link {
   }
 
   @override
-  String transmite() {
-    throw UnimplementedError();
-  }
-
-  @override
   String toString() =>
       'PLink(theta: $theta, a: $a, alpha: $alpha, bound: $bound, inverse: $inverse)';
 }

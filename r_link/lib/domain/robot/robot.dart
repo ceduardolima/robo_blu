@@ -21,12 +21,12 @@ class Robot {
 
   int linksQuantity() => links.length;
 
-  Point3D toolPosition() => Point3D(0, 0, 0);
+  Point3D toolPosition(RobotPosition pos) {
+    final res = pos.calculateDH(links);
+    return Point3D(res[0][3], res[1][3], res[2][3]);
+  }
 
   @override
   String toString() =>
       'Robot(name: $name, initialPosition: $initialPosition, links: $links)';
-
-  @override
-  int get hashCode => name.hashCode ^ initialPosition.hashCode ^ links.hashCode;
 }

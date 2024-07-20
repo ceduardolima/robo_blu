@@ -3,7 +3,7 @@ import 'package:r_link/domain/utils/bound.dart';
 import 'package:r_link/domain/comunication/transmition.dart';
 import 'package:r_link/domain/utils/dh_matrix.dart';
 
-abstract class Link implements Transmite {
+abstract class Link {
   final double a;
   final double alpha;
   final Bound? bound;

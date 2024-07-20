@@ -1,12 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math';
 
+import 'package:matrices/matrices.dart';
+
 /// Representação da matiz DH
 class DHMatrix {
   final double a;
   final double d;
   final double theta;
   final double alpha;
+
   DHMatrix({
     required this.a,
     required this.d,
@@ -14,14 +17,15 @@ class DHMatrix {
     required this.alpha,
   });
 
-  List<List<num>> get dh => [
+  Matrix get dh =>
+      Matrix.fromList([
         _line1(),
         _line2(),
         _line3(),
         _line4(),
-      ];
+      ]);
 
-  List<num> _line1() {
+  List<double> _line1() {
     return [
       cos(theta),
       -1 * sin(theta) * cos(alpha),
@@ -30,7 +34,7 @@ class DHMatrix {
     ];
   }
 
-  List<num> _line2() {
+  List<double> _line2() {
     return [
       sin(theta),
       cos(theta) * sin(alpha),
@@ -39,9 +43,9 @@ class DHMatrix {
     ];
   }
 
-  List<num> _line3() {
+  List<double> _line3() {
     return [0, sin(alpha), cos(alpha), d];
   }
 
-  List<num> _line4() => [0, 0, 0, 1];
+  List<double> _line4() => [0, 0, 0, 1];
 }
