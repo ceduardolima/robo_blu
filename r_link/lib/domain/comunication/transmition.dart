@@ -1,5 +1,6 @@
 import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
+import 'package:r_link/utils/log.dart';
 
 /// Cria um List<int> no seguinte formato:
 ///
@@ -15,5 +16,6 @@ List<int> transmite(Robot robot, List<RobotPosition> positions) {
   for (final j in positions) {
     a.addAll(j.positions);
   }
+  Log.d(a);
   return a;
 }

@@ -10,7 +10,6 @@
 // Obtém o tamanho do ponteiro DATA
 #define getDataLength(numPos, numLink) ((3 + numLink * numPos));
 // Obtém o ponteiro POSIÇÃO
-#define getPos(data, robot, index) (&(data[3 + robot->numLink * index]));
 
 // Tipos do robo
 typedef uint8_t POSITION;
@@ -24,6 +23,11 @@ typedef struct
     uint numLink : 4;
 } ROBOT;
 
+POSITION *getPos(DATA *data, ROBOT *robot, int index)
+{
+    return (&(data[3 + robot->numLink * index]));
+}
+
 ROBOT *createRobot(DATA *data)
 {
     ROBOT *robot = (ROBOT *)malloc(sizeof(ROBOT));
@@ -36,7 +40,7 @@ ROBOT *createRobot(DATA *data)
 
 POSITION *getRobotPos(ROBOT *robot, uint index)
 {
-    return &(robot->pos[3 + robot->numLink * robot->numPos]);
+    return &(robot->pos[robot->numLink * index]);
 }
 
 void printLink(POSITION *p, uint8_t numLink)
