@@ -18,7 +18,6 @@ class PLink extends Link {
 
   @override
   String transmite() {
-    // TODO: implement transmite
     throw UnimplementedError();
   }
 

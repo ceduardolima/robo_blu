@@ -11,8 +11,7 @@ class RobotPosition implements Transmite {
 
   @override
   String transmite() {
-    // TODO: implement transmite
-    throw UnimplementedError();
+    return positions.fold("", (previousValue, element) => "$previousValue-$element");
   }
 
   @override

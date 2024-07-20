@@ -9,9 +9,15 @@ import "descriptor_tile.dart";
 
 class CharacteristicTile extends StatefulWidget {
   final BluetoothCharacteristic characteristic;
-  final List<DescriptorTile> descriptorTiles;
+  final void Function(String chUuid) onPressed;
+  final bool selected;
 
-  const CharacteristicTile({Key? key, required this.characteristic, required this.descriptorTiles}) : super(key: key);
+  const CharacteristicTile({
+    Key? key,
+    required this.characteristic,
+    required this.onPressed,
+    required this.selected,
+  }) : super(key: key);
 
   @override
   State<CharacteristicTile> createState() => _CharacteristicTileState();
@@ -25,7 +31,8 @@ class _CharacteristicTileState extends State<CharacteristicTile> {
   @override
   void initState() {
     super.initState();
-    _lastValueSubscription = widget.characteristic.lastValueStream.listen((value) {
+    _lastValueSubscription =
+        widget.characteristic.lastValueStream.listen((value) {
       _value = value;
       if (mounted) {
         setState(() {});
@@ -41,23 +48,10 @@ class _CharacteristicTileState extends State<CharacteristicTile> {
 
   BluetoothCharacteristic get c => widget.characteristic;
 
-  List<int> _getRandomBytes() {
-    final math = Random();
-    return [math.nextInt(255), math.nextInt(255), math.nextInt(255), math.nextInt(255)];
-  }
-
-  Future onReadPressed() async {
-    try {
-      await c.read();
-      Snackbar.show(ABC.c, "Read: Success", success: true);
-    } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Read Error:", e), success: false);
-    }
-  }
-
   Future onWritePressed() async {
     try {
-      await c.write(_getRandomBytes(), withoutResponse: c.properties.writeWithoutResponse);
+      await c.write("D-2-3-0-0-0".codeUnits,
+          withoutResponse: c.properties.writeWithoutResponse);
       Snackbar.show(ABC.c, "Write: Success", success: true);
       if (c.properties.read) {
         await c.read();
@@ -79,7 +73,8 @@ class _CharacteristicTileState extends State<CharacteristicTile> {
         setState(() {});
       }
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Subscribe Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Subscribe Error:", e),
+          success: false);
     }
   }
 
@@ -91,17 +86,6 @@ class _CharacteristicTileState extends State<CharacteristicTile> {
   Widget buildValue(BuildContext context) {
     String data = _value.toString();
     return Text(data, style: TextStyle(fontSize: 13, color: Colors.grey));
-  }
-
-  Widget buildReadButton(BuildContext context) {
-    return TextButton(
-        child: Text("Read"),
-        onPressed: () async {
-          await onReadPressed();
-          if (mounted) {
-            setState(() {});
-          }
-        });
   }
 
   Widget buildWriteButton(BuildContext context) {
@@ -128,38 +112,26 @@ class _CharacteristicTileState extends State<CharacteristicTile> {
         });
   }
 
-  Widget buildButtonRow(BuildContext context) {
-    bool read = widget.characteristic.properties.read;
-    bool write = widget.characteristic.properties.write;
-    bool notify = widget.characteristic.properties.notify;
-    bool indicate = widget.characteristic.properties.indicate;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (read) buildReadButton(context),
-        if (write) buildWriteButton(context),
-        if (notify || indicate) buildSubscribeButton(context),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: ListTile(
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text('Characteristic'),
-            buildUuid(context),
-            buildValue(context),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListTile(
+        onTap: () => widget.onPressed(widget.characteristic.uuid.str),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text('Characteristic'),
+              buildUuid(context),
+            ],
+          ),
         ),
-        subtitle: buildButtonRow(context),
+        trailing: widget.selected ? const Icon(Icons.check) : null,
         contentPadding: const EdgeInsets.all(0.0),
       ),
-      children: widget.descriptorTiles,
     );
   }
 }

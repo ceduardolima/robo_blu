@@ -1,13 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:r_link/domain/kinematic/kinematic.dart';
 import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
 import 'package:r_link/mock/robot_mock.dart';
+import 'package:r_link/repositories/global_device.dart';
 import 'package:r_link/resources/theme/app_theme.dart';
 import 'package:r_link/ui/widgets/dialogs/add_position_page.dart';
 
 class ControlPositionsPage extends StatefulWidget {
-  const ControlPositionsPage({super.key, required this.robot});
+  const ControlPositionsPage(
+      {super.key, required this.robot, required this.device});
+
+  final BluetoothDevice? device;
   final Robot robot;
 
   @override
@@ -16,11 +23,30 @@ class ControlPositionsPage extends StatefulWidget {
 
 class _ControlPositionsPageState extends State<ControlPositionsPage> {
   List<RobotPosition> positions = [];
+  List<BluetoothService> _services = [];
+  late StreamSubscription<BluetoothConnectionState>
+      _connectionStateSubscription;
+  BluetoothConnectionState _connectionState =
+      BluetoothConnectionState.disconnected;
 
   @override
   void initState() {
     setState(() => positions.add(robot.initialPosition));
+    _connectionStateSubscription =
+        widget.device!.connectionState.listen((state) async {
+      _connectionState = state;
+      if (state == BluetoothConnectionState.connected) {}
+      if (mounted) {
+        setState(() {});
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _connectionStateSubscription.cancel();
+    super.dispose();
   }
 
   Future<RobotPosition> _addPosition(BuildContext context) async {
@@ -33,11 +59,27 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
 
   Widget _sendPositions() {
     return IconButton(
-      onPressed: () {
-        if (positions.isNotEmpty) {}
+      onPressed: () async {
+        await onWritePressed();
       },
       icon: const Icon(Icons.send),
     );
+  }
+
+  Future onWritePressed() async {
+    try {
+      if (GlobalDevice.device != null) {
+        final c = GlobalDevice.device!.getCharacteristic();
+        final pos = KinematicCommunication.direct(robot, positions);
+        print(pos);
+        await c.write(
+          pos,
+          withoutResponse: c.properties.writeWithoutResponse,
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Widget _tile(RobotPosition pos, index) {

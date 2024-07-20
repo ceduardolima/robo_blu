@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:r_link/mock/robot_mock.dart';
+import 'package:r_link/repositories/global_device.dart';
 import 'package:r_link/ui/pages/bluetooth_connection/bluetooth_connection_page.dart';
 import 'package:r_link/ui/pages/control_position/control_positions.dart';
 
@@ -21,20 +22,24 @@ class _MainPageState extends State<MainPage> {
             builder: (context) => const BluetoothConnectionPage(),
           ),
         );
-        setState((){});
+        setState(() {});
       },
       icon: const Icon(Icons.bluetooth),
     );
   }
 
   String _getConnectedName() {
-    if (FlutterBluePlus.connectedDevices.isEmpty) {
+    if (GlobalDevice.device == null) {
       return "Nenhum";
     } else {
-      final name = FlutterBluePlus.connectedDevices[0].platformName;
-      final id = FlutterBluePlus.connectedDevices[0].remoteId.str;
-      return name.isNotEmpty ? name : id;
+      final device = GlobalDevice.device!.device;
+      return device.platformName.isEmpty ? device.remoteId.str : device.platformName;
     }
+  }
+
+  BluetoothDevice? _getDevice() {
+    final devices = FlutterBluePlus.connectedDevices;
+    return devices.isEmpty ? null : devices[0];
   }
 
   @override
@@ -51,7 +56,10 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.fromLTRB(16, 5, 10, 10),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Dispositivo conectado: ${_getConnectedName()}", style: TextStyle(color: Colors.white),),
+              child: Text(
+                "Dispositivo conectado: ${_getConnectedName()}",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ),
@@ -69,6 +77,7 @@ class _MainPageState extends State<MainPage> {
                     MaterialPageRoute(
                       builder: (context) => ControlPositionsPage(
                         robot: robot,
+                        device: _getDevice(),
                       ),
                     ));
               },

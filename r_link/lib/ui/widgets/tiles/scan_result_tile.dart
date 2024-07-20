@@ -67,7 +67,6 @@ class _ScanResultTileState extends State<ScanResultTile> {
   }
 
   Widget _buildTitle(BuildContext context) {
-    print(widget.result.device);
     if (widget.result.device.platformName.isNotEmpty) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
