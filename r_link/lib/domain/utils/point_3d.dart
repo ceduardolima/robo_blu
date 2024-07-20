@@ -11,5 +11,5 @@ class Point3D {
   );
 
   @override
-  String toString() => 'Point3D(x: $x, y: $y, z: $z)';
+  String toString() => '(${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)}, ${z.toStringAsFixed(2)})';
 }

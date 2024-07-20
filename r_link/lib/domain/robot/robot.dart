@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:r_link/domain/links/link.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
 import 'package:r_link/domain/utils/point_3d.dart';
+import 'package:r_link/utils/log.dart';
 
 class Robot {
   final String name;
@@ -23,6 +24,7 @@ class Robot {
 
   Point3D toolPosition(RobotPosition pos) {
     final res = pos.calculateDH(links);
+    Log.d(res);
     return Point3D(res[0][3], res[1][3], res[2][3]);
   }
 

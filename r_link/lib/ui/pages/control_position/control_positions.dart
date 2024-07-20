@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:r_link/domain/kinematic/kinematic.dart';
+import 'package:r_link/domain/comunication/transmition.dart';
 import 'package:r_link/domain/robot/robot.dart';
 import 'package:r_link/domain/robot/robot_position.dart';
 import 'package:r_link/mock/robot_mock.dart';
 import 'package:r_link/repositories/global_device.dart';
 import 'package:r_link/resources/theme/app_theme.dart';
 import 'package:r_link/ui/widgets/dialogs/add_position_page.dart';
+import 'package:r_link/utils/log.dart';
 
 class ControlPositionsPage extends StatefulWidget {
   const ControlPositionsPage(
@@ -24,7 +25,7 @@ class ControlPositionsPage extends StatefulWidget {
 class _ControlPositionsPageState extends State<ControlPositionsPage> {
   List<RobotPosition> positions = [];
   List<BluetoothService> _services = [];
-  late StreamSubscription<BluetoothConnectionState>
+  StreamSubscription<BluetoothConnectionState>?
       _connectionStateSubscription;
   BluetoothConnectionState _connectionState =
       BluetoothConnectionState.disconnected;
@@ -32,20 +33,24 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
   @override
   void initState() {
     setState(() => positions.add(robot.initialPosition));
-    _connectionStateSubscription =
-        widget.device!.connectionState.listen((state) async {
-      _connectionState = state;
-      if (state == BluetoothConnectionState.connected) {}
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    if (widget.device != null) {
+      _connectionStateSubscription =
+          widget.device!.connectionState.listen((state) async {
+        _connectionState = state;
+        if (state == BluetoothConnectionState.connected) {}
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    _connectionStateSubscription.cancel();
+    if (_connectionStateSubscription != null) {
+      _connectionStateSubscription!.cancel();
+    }
     super.dispose();
   }
 
@@ -70,19 +75,19 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
     try {
       if (GlobalDevice.device != null) {
         final c = GlobalDevice.device!.getCharacteristic();
-        final pos = KinematicCommunication.direct(robot, positions);
-        print(pos);
+        final pos = transmite(robot, positions);
+        Log.i("Enviando: $pos");
         await c.write(
           pos,
           withoutResponse: c.properties.writeWithoutResponse,
         );
       }
     } catch (e) {
-      print(e);
+      Log.f("Falha ao enviar as posições", error: e);
     }
   }
 
-  Widget _tile(RobotPosition pos, index) {
+  Widget _tile(Robot robot, RobotPosition pos, index) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -90,7 +95,8 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
           title: index == 0
               ? const Text("Posição inicial")
               : Text("Posição ${index + 1}"),
-          subtitle: Text(pos.toString()),
+          subtitle: Text(
+              "Juntas: $pos\nFerramenta: ${robot.toolPosition(pos)}"),
           trailing: index != 0 ? _deletePosButton(index) : null,
         ),
         const Divider()
@@ -102,7 +108,7 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
     return IconButton(
       icon: Icon(
         Icons.delete,
-        color: colorScheme.secondary,
+        color: colorScheme.error,
       ),
       onPressed: () {
         setState(() => positions.removeAt(index));
@@ -127,16 +133,17 @@ class _ControlPositionsPageState extends State<ControlPositionsPage> {
         child: const Icon(Icons.add),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: positions.isEmpty
-              ? const Center(child: Text("Não há posições registradas"))
-              : ListView.builder(
-                  itemCount: positions.length,
-                  itemBuilder: (context, index) {
-                    final pos = positions[index];
-                    return _tile(pos, index);
-                  },
-                )),
+        padding: const EdgeInsets.all(16.0),
+        child: positions.isEmpty
+            ? const Center(child: Text("Não há posições registradas"))
+            : ListView.builder(
+                itemCount: positions.length,
+                itemBuilder: (context, index) {
+                  final pos = positions[index];
+                  return _tile(robot, pos, index);
+                },
+              ),
+      ),
     );
   }
 }

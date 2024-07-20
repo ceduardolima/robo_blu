@@ -8,12 +8,14 @@ abstract class Link {
   final double alpha;
   final Bound? bound;
   final bool inverse;
+  final double offset;
 
   Link({
     required this.a,
     required this.alpha,
     this.inverse = false,
     this.bound,
+    this.offset = 0.0,
   });
 
   DHMatrix calculateDH(double value);

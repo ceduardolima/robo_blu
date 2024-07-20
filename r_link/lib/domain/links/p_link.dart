@@ -9,11 +9,12 @@ class PLink extends Link {
     required this.theta,
     super.bound,
     super.inverse,
+    super.offset,
   });
 
   @override
   DHMatrix calculateDH(double value) {
-    return DHMatrix(a: a, d: value, theta: theta, alpha: alpha);
+    return DHMatrix(a: a, d: value + offset, theta: theta, alpha: alpha);
   }
 
   @override

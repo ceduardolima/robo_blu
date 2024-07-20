@@ -7,15 +7,22 @@ import 'package:matrices/matrices.dart';
 class DHMatrix {
   final double a;
   final double d;
-  final double theta;
-  final double alpha;
+  late final double theta;
+  late final double alpha;
 
   DHMatrix({
     required this.a,
     required this.d,
-    required this.theta,
-    required this.alpha,
-  });
+    required double theta,
+    required double alpha,
+  }) {
+    this.theta = _toRad(theta);
+    this.alpha = _toRad(alpha);
+  }
+
+  double _toRad(double deg) {
+    return pi * deg / 180.0;
+  }
 
   Matrix get dh =>
       Matrix.fromList([
@@ -37,7 +44,7 @@ class DHMatrix {
   List<double> _line2() {
     return [
       sin(theta),
-      cos(theta) * sin(alpha),
+      cos(theta) * cos(alpha),
       -1 * cos(theta) * sin(alpha),
       a * sin(theta)
     ];

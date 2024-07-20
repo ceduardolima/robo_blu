@@ -3,9 +3,10 @@ import 'package:matrices/matrices.dart';
 import 'package:r_link/domain/comunication/transmition.dart';
 import 'package:r_link/domain/utils/dh_matrix.dart';
 
+import '../../utils/log.dart';
 import '../links/link.dart';
 
-class RobotPosition implements Transmite {
+class RobotPosition {
   final int linksQuantity;
   final List<int> positions;
 
@@ -18,14 +19,18 @@ class RobotPosition implements Transmite {
       throw ArgumentError(
           "Número de links diverge do número de links da RobotPosition");
     }
-    Matrix result = Matrix.one(4, 4);
+    Matrix? m;
     for (int i = 0; i < linksQuantity; i++) {
-      result = result * link[i].calculateDH(positions[i].toDouble());
+      final r = link[i].calculateDH(positions[i].toDouble()).dh;
+      if (m == null) {
+        m = r;
+      } else {
+        m = m * r;
+      }
     }
-    return result;
+    return m!;
   }
 
-  @override
   String transmite() {
     return positions.fold(
         "", (previousValue, element) => "$previousValue-$element");

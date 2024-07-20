@@ -31,6 +31,7 @@ dependencies:
   flutter_form_builder: ^9.2.1
   flutter_blue_plus: ^1.32.8
   matrices: ^1.2.7
+  logger: ^2.4.0
   flutter:
     sdk: flutter
 

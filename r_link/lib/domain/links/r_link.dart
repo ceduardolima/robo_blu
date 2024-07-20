@@ -10,6 +10,7 @@ class RLink extends Link {
     required super.alpha,
     super.bound,
     super.inverse,
+    super.offset,
   });
 
   @override
@@ -27,6 +28,6 @@ class RLink extends Link {
 
   @override
   DHMatrix calculateDH(double value) {
-    return DHMatrix(a: a, d: d, theta: value, alpha: alpha);
+    return DHMatrix(a: a, d: d, theta: value + offset, alpha: alpha);
   }
 }
