@@ -13,14 +13,19 @@
 #define NUM_LINK 3
 
 const uint8_t servoPin = 5;
+const uint8_t q2Pin = 4;
+const uint8_t q1Pin = 19;
+const uint8_t ledPin = 21;
 
 // Timer variables
 unsigned long lastTime = 0;
 unsigned long timerDelay = 30000;
 
 Servo base;
-const int servoVelocity = 5;
-static int baseLastAngValue = 0;
+Servo q2;
+Servo q1;
+const int servoVelocity = 10;
+int baseLastAngValue = 0;
 
 // Flags
 bool deviceConnected = false;
@@ -43,6 +48,7 @@ class ServerCallback : public BLEServerCallbacks
         Serial.println("Conectado!");
         deviceConnected = true;
         isConnecting = false;
+        digitalWrite(ledPin, HIGH);
     }
 
     void onDisconnect(BLEServer *server)
@@ -50,6 +56,7 @@ class ServerCallback : public BLEServerCallbacks
         Serial.println("Disconectado");
         deviceConnected = false;
         isConnecting = false;
+        digitalWrite(ledPin, LOW);
     }
 };
 
@@ -57,7 +64,13 @@ void setup()
 {
     Serial.begin(115200);
     base.attach(servoPin);
-    base.write(0);
+    q1.attach(q1Pin);
+    q2.attach(q2Pin);
+    base.write(80);
+    q2.write(30);
+    q1.write(30);
+    pinMode(ledPin, OUTPUT);
+
     Serial.println("Ultima: " + (String)(baseLastAngValue));
     Serial.println("Ultima: " + (String)(baseLastAngValue));
     Serial.println("Iniciando servidor " + (String)(bleServerName));
@@ -97,20 +110,11 @@ void loop()
     {
         int i = 0;
         DATA *data = positionCh.getData();
-        Serial.println("Ultima: " + (String)(baseLastAngValue));
-        if (baseLastAngValue == 11565)
-        {
-            Serial.println("Ultima: " + (String) *(&baseLastAngValue));
-        }
         if (dataIsNotEqual(data, last))
         {
-            Serial.println("Ultima1: " + (String)(baseLastAngValue));
             ROBOT *robot = createRobot(data);
-            Serial.println("Ultima2: " + (String)(baseLastAngValue));
             int length = getDataLength(robot->numPos, robot->numLink);
-            Serial.println("Ultima3: " + (String)(baseLastAngValue));
             moveRobot(robot);
-            Serial.println("Ultima4: " + (String)(baseLastAngValue));
             recordLastValue(data, length);
         }
     }
@@ -125,19 +129,15 @@ void recordLastValue(DATA *d, int length)
 
 void moveRobot(ROBOT *robot)
 {
-    Serial.println("Ultima5: " + (String)(baseLastAngValue));
     for (int i = 0; i < robot->numPos; i++)
     {
-        Serial.println("Ultima6: " + (String)(baseLastAngValue));
         POSITION *p = getRobotPos(robot, i);
-        Serial.println("Ultima7: " + (String)(baseLastAngValue));
         Serial.println("Pos " + (String)i);
         printLink(p, robot->numLink);
-        Serial.println("Ultima8: " + (String)(baseLastAngValue));
-        base.write(p[0]);
-        //baseLastAngValue = moveServo(base, p[0], baseLastAngValue);
-        Serial.println("Ultima11: " + (String)(baseLastAngValue));
-        delay(50);
+        base.write((int) p[0]);
+        q1.write((int) p[1]);
+        q2.write((int) p[2]);
+        delay(3000);
     }
 }
 
@@ -152,14 +152,14 @@ int moveServo(Servo s, int value, int lastValue)
         {
             Serial.println("Final: " + (String)value + "\nnewPos: " + (String)newPos);
             s.write(newPos > value ? value : newPos);
-            delay(50);
+            delay(100);
         }
     else
         for (uint newPos = lastValue; newPos > value; newPos -= servoVelocity)
         {
             Serial.println("Final: " + (String)value + "\nnewPos: " + (String)newPos);
             s.write(newPos < value ? value : newPos);
-            delay(50);
+            delay(100);
         }
     return value;
 }
